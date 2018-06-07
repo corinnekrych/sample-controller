@@ -37,11 +37,11 @@ import (
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/workqueue"
 
-	samplev1alpha1 "k8s.io/sample-controller/pkg/apis/samplecontroller/v1alpha1"
-	clientset "k8s.io/sample-controller/pkg/client/clientset/versioned"
-	samplescheme "k8s.io/sample-controller/pkg/client/clientset/versioned/scheme"
-	informers "k8s.io/sample-controller/pkg/client/informers/externalversions/samplecontroller/v1alpha1"
-	listers "k8s.io/sample-controller/pkg/client/listers/samplecontroller/v1alpha1"
+	samplev1alpha1 "github.com/kubernetes/sample-controller/pkg/apis/samplecontroller/v1alpha1"
+	clientset "github.com/kubernetes/sample-controller/pkg/client/clientset/versioned"
+	samplescheme "github.com/kubernetes/sample-controller/pkg/client/clientset/versioned/scheme"
+	informers "github.com/kubernetes/sample-controller/pkg/client/informers/externalversions/samplecontroller/v1alpha1"
+	listers "github.com/kubernetes/sample-controller/pkg/client/listers/samplecontroller/v1alpha1"
 )
 
 const controllerAgentName = "sample-controller"
@@ -149,6 +149,7 @@ func NewController(
 // is closed, at which point it will shutdown the workqueue and wait for
 // workers to finish processing their current work items.
 func (c *Controller) Run(threadiness int, stopCh <-chan struct{}) error {
+	fmt.Printf("--> In Controller::Run \n")
 	defer runtime.HandleCrash()
 	defer c.workqueue.ShutDown()
 
@@ -185,6 +186,7 @@ func (c *Controller) runWorker() {
 // processNextWorkItem will read a single work item off the workqueue and
 // attempt to process it, by calling the syncHandler.
 func (c *Controller) processNextWorkItem() bool {
+	fmt.Printf("--> In Controller::processNextWorkItem\n")
 	obj, shutdown := c.workqueue.Get()
 
 	if shutdown {
@@ -239,6 +241,7 @@ func (c *Controller) processNextWorkItem() bool {
 // converge the two. It then updates the Status block of the Foo resource
 // with the current status of the resource.
 func (c *Controller) syncHandler(key string) error {
+	fmt.Printf("--> In Controller::syncHandler\n")
 	// Convert the namespace/name string into a distinct namespace and name
 	namespace, name, err := cache.SplitMetaNamespaceKey(key)
 	if err != nil {
@@ -317,6 +320,7 @@ func (c *Controller) syncHandler(key string) error {
 }
 
 func (c *Controller) updateFooStatus(foo *samplev1alpha1.Foo, deployment *appsv1.Deployment) error {
+	fmt.Printf("--> In Controller::updateFooStatus\n")
 	// NEVER modify objects from the store. It's a read-only, local cache.
 	// You can use DeepCopy() to make a deep copy of original object and modify this copy
 	// Or create a copy manually for better performance
@@ -349,6 +353,7 @@ func (c *Controller) enqueueFoo(obj interface{}) {
 // It then enqueues that Foo resource to be processed. If the object does not
 // have an appropriate OwnerReference, it will simply be skipped.
 func (c *Controller) handleObject(obj interface{}) {
+	fmt.Printf("--> In Controller::handleObject\n")
 	var object metav1.Object
 	var ok bool
 	if object, ok = obj.(metav1.Object); !ok {
@@ -387,6 +392,7 @@ func (c *Controller) handleObject(obj interface{}) {
 // the appropriate OwnerReferences on the resource so handleObject can discover
 // the Foo resource that 'owns' it.
 func newDeployment(foo *samplev1alpha1.Foo) *appsv1.Deployment {
+	fmt.Printf("--> In Controller::newDeployment\n")
 	labels := map[string]string{
 		"app":        "nginx",
 		"controller": foo.Name,

@@ -38,18 +38,28 @@ This is an example of how to build a kube-like controller with a single type.
 
 **Prerequisite**: Since the sample-controller uses `apps/v1` deployments, the Kubernetes cluster version should be greater than 1.9.
 
+[Community best practices for writing a controller](https://github.com/kubernetes/community/blob/master/contributors/devel/controllers.md)
+
 ```sh
-# assumes you have a working kubeconfig, not required if operating in-cluster
-$ go run *.go -kubeconfig=$HOME/.kube/config
+go build ./...
+go install ./...
+$GOPATH/bin/sample-controller -kubeconfig=$HOME/.kube/config
+```
+
+```sh
+alias k=kubectl
+k get all --namespace=default
+
+k delete crd foos.samplecontroller.k8s.io
 
 # create a CustomResourceDefinition
-$ kubectl create -f artifacts/examples/crd.yaml
+k create -f artifacts/examples/crd.yaml
 
 # create a custom resource of type Foo
-$ kubectl create -f artifacts/examples/example-foo.yaml
+k create -f artifacts/examples/example-foo.yaml
 
 # check deployments created through the custom resource
-$ kubectl get deployments
+k get deployments
 ```
 
 ## Use Cases

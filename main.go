@@ -27,9 +27,10 @@ import (
 	// Uncomment the following line to load the gcp plugin (only required to authenticate against GKE clusters).
 	// _ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 
-	clientset "k8s.io/sample-controller/pkg/client/clientset/versioned"
-	informers "k8s.io/sample-controller/pkg/client/informers/externalversions"
-	"k8s.io/sample-controller/pkg/signals"
+	clientset "github.com/kubernetes/sample-controller/pkg/client/clientset/versioned"
+	informers "github.com/kubernetes/sample-controller/pkg/client/informers/externalversions"
+	"github.com/kubernetes/sample-controller/pkg/signals"
+	"fmt"
 )
 
 var (
@@ -44,6 +45,8 @@ func main() {
 	stopCh := signals.SetupSignalHandler()
 
 	cfg, err := clientcmd.BuildConfigFromFlags(masterURL, kubeconfig)
+	fmt.Printf("--> Starting with config masterURL=%s kubeconfig=%s\n", masterURL, kubeconfig)
+
 	if err != nil {
 		glog.Fatalf("Error building kubeconfig: %s", err.Error())
 	}
