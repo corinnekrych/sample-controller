@@ -31,6 +31,7 @@ import (
 	informers "github.com/kubernetes/sample-controller/pkg/client/informers/externalversions"
 	"github.com/kubernetes/sample-controller/pkg/signals"
 	"fmt"
+	controller "github.com/kubernetes/sample-controller/controller"
 )
 
 var (
@@ -64,7 +65,7 @@ func main() {
 	kubeInformerFactory := kubeinformers.NewSharedInformerFactory(kubeClient, time.Second*30)
 	exampleInformerFactory := informers.NewSharedInformerFactory(exampleClient, time.Second*30)
 
-	controller := NewController(kubeClient, exampleClient,
+	controller := controller.NewController(kubeClient, exampleClient,
 		kubeInformerFactory.Apps().V1().Deployments(),
 		exampleInformerFactory.Samplecontroller().V1alpha1().Foos())
 
